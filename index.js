@@ -1,6 +1,5 @@
-var Promise = require('bluebird');
 var artnet = require('artnet')(options);
-
+var _ = require('lodash');
 var options = {
     host: '192.168.1.95'
 };
@@ -29,7 +28,7 @@ var plConf={
     open:5,
     close:0
   },
-  colours:{
+  colors:{
     white:0,
     red:7,
     orange:14,
@@ -53,7 +52,7 @@ var d = {
   shutO:plConf.shCtrl.open,
   shutC:plConf.shCtrl.close,
   f:plConf.channels.focus,
-  c:plConf.colours
+  c:plConf.colors
 };
 
 function setAllChan(val){
@@ -63,7 +62,6 @@ function setAllChan(val){
   }
   return allChanArr;
 }
-//console.log(setAllChan(null));
 
 var blankMsg=setAllChan(null);
 var zeroMsg=setAllChan(0);
@@ -97,62 +95,153 @@ var dvc = {
       }
     });
   },
-  pTo:function(pan,msg,cb){
+  pTo:function(pan,msg){
     if(!msg){
-      console.log('new message init');
-      var msg= setAllChan(null);
+      console.log('new message init pan');
+      msg= blankMsg;
     }
     if(Array.isArray(pan)===true){
       msg[0]=pan[0];
       msg[1]=pan[1];
     }
     else{
-      msg[0]=pan[0];
+      msg[0]=pan;
     }
 
     return msg;
   },
   tTo:function(tilt,msg){
     if(!msg){
-      console.log('new message init');
-      var msg= setAllChan(null);
+      console.log('new message init tilt');
+      msg= blankMsg;
     }
     if(Array.isArray(tilt)===true){
       msg[2]=tilt[0];
       msg[3]=tilt[1];
     }
     else{
-      msg[2]=tilt[0];
+      msg[2]=tilt;
     }
 
     return msg;
   },
   ptTo:function(pan,tilt,msg){
     if(!msg){
-      console.log('new message init');
-      var msg= setAllChan(null);
+      console.log('new message init pan and tilt');
+      msg= blankMsg;
     }
     msg = dvc.pTo(pan,msg);
     msg = dvc.tTo(tilt,msg);
-    console.log(msg)
+
     return msg;
+  },
+  cTo:function(color,msg){
+    if(!msg){
+      console.log('new message init color');
+      msg= blankMsg;
+    }
+    var val = searchMat(d.c,color);
+    msg[7]=val;
+
+    return msg;
+  },
+  lightOn:function(val,msg){
+    if(!msg){
+      console.log('new message init light on');
+      msg= blankMsg;
+    }
+    if(!val){
+      val = 255;
+    }
+    msg[5]=val;
+    return msg;
+  },
+  lightOff:function(msg){
+    if(!msg){
+      console.log('new message init light off');
+      msg= blankMsg;
+    }
+
+    msg[5]=0;
+    return msg;
+  },
+  focus:function(val,msg){
+    if(!msg){
+      console.log('new message init focus');
+      msg= blankMsg;
+    }
+
+    msg[11]=val;
+    return msg;
+  },
+  iris:function(val,msg){
+    if(!msg){
+      console.log('new message init iris');
+      msg= blankMsg;
+    }
+
+    msg[14]=val;
+    return msg;
+  },
+  reset:function(){
+    return blankMsg;
   }
+};
+
+
+var DERIVES_LATERALES = {
+  pan:[112,113],
+  tilt:[114,115],
+  color:'red',
+  focus:100,
+  iris:20
+};
+
+function setZone(z){
+  var msg = dvc.ptTo(z.pan,z.tilt);
+  msg = dvc.focus(z.focus,msg);
+  msg = dvc.iris(z.iris,msg);
+  msg = dvc.cTo(z.color,msg);
+  setTimeout(function(){
+    msg = dvc.lightOn(255,msg);
+    console.log(msg);
+    return msg;
+  },1000);
 }
 
-console.log(dvc.ptTo([0,1],[3,4]));
+// function test(c){
+//   msg = dvc.ptTo([0,1],[3,4]);
+//   msg = dvc.focus(100,msg);
+//   msg = dvc.iris(20,msg);
+//   msg = dvc.lightOn(120,msg);
+//   console.log(msg);
+//
+// }
+//test();
+function searchMat (list, mat) {
+  // console.log(list);
+  var val = _.filter(list,function (v,k) {
+    return k === mat;
+  });
+  return val[0];
+}
+
+// console.log(dvc.reset());
+// console.log(dvc.iris(200));
+// console.log(dvc.focus(200));
+// console.log(dvc.lightOff());
+// console.log(dvc.lightOn());
+// console.log(dvc.lightOn(200));
+// console.log(dvc.cTo('red'));
+// console.log(dvc.ptTo([0,1],[3,4]));
 // console.log(device.panTo([0,1]));
 // console.log(blankMsg.length)
 
 
 
 
-function resetDevice(){}
 
-function initDevice(){
-  artnet.set(2,1,setupMsg, function (err, res) {
-    if (err){artnet.close();}
-  });
-}
+
 
 /**
  * wrMsg : send dmx data to the artnet node
@@ -191,16 +280,9 @@ io.on('connection', function (socket) {
     io.emit('light:send',data);
   });
   socket.on('zone', function (data) {
-    console.log(data);
+    console.log('da zone',data);
     var zoneLine = 'zone:'+data;
-    io.emit(zoneLine,data);
+    setZone(DERIVES_LATERALES);
+    // io.emit(zoneLine,data);
   });
-});
-
-
-
-
-// set channel 1 to 255 and disconnect afterwards.
-artnet.set(2,1, 255, function (err, res) {
-    //artnet.close();
 });
