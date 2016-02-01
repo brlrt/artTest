@@ -1,8 +1,10 @@
-var artnet = require('artnet')(options);
 var _ = require('lodash');
 var options = {
     host: '192.168.1.95'
 };
+var z = require('./zones');
+
+var artnet = require('artnet')(options);
 
 var plConf={
   uni:2,
@@ -62,36 +64,36 @@ function setAllChan(val){
   }
   return allChanArr;
 }
-
 var blankMsg=setAllChan(null);
 var zeroMsg=setAllChan(0);
 var fullMsg=setAllChan(255);
+var currMsg=blankMsg;
 
 var setupMsg=[
-  0,      // pan
-  0,        // fine pan
-  120,      // tilt
-  0,        // fine Tilt
-  0,      // pan tilt speed : 0 = MAXED !!!
-  0,      // dimmer : half power
-  255,      // shutter : no BLINK allowed
-  0,        // color : white
-  0,        // globo wheel 1
-  0,        // globo wheel 1 rotation speed
-  0,        // globo 2
-  86,      // focus
-  0,        // prism : disabled
-  0,        // prism rotation
-  35,       // iris width : wide opened
-  0         // program : none
+  0,        // 01 pan
+  0,        // 02 fine pan
+  120,      // 03 tilt
+  0,        // 04 fine Tilt
+  0,        // 05 pan tilt speed : 0 = MAXED !!!
+  0,        // 06dimmer : half power
+  255,      // 07 shutter : no BLINK allowed
+  0,        // 08 color : white
+  0,        // 09globo wheel 1
+  0,        // 10 globo wheel 1 rotation speed
+  0,        // 11 globo 2
+  86,       // 12 focus
+  0,        // 13 prism : disabled
+  0,        // 14 prism rotation
+  0,       // 15 iris width : wide opened
+  0         // 16 program : none
 ];
 
 var dvc = {
   init:function(){
     artnet.set(2,1,setupMsg, function (err, res) {
       if (err){
-        console.log('err',err);
-        artnet.close();
+        console.log('arnet not found',err);
+        //artnet.close();
       }
     });
   },
@@ -146,6 +148,7 @@ var dvc = {
     return msg;
   },
   lightOn:function(val,msg){
+    console.log('light var',msg,'value',val);
     if(!msg){
       console.log('new message init light on');
       msg= blankMsg;
@@ -154,21 +157,25 @@ var dvc = {
       val = 255;
     }
     msg[5]=val;
+    // msg[6]=255;
+    wrMsg(msg);
     return msg;
+
   },
   lightOff:function(msg){
     if(!msg){
       console.log('new message init light off');
-      msg= blankMsg;
+      msg= currMsg;
     }
-
     msg[5]=0;
+    // msg[6]=255;
+    wrMsg(msg);
     return msg;
   },
   focus:function(val,msg){
     if(!msg){
       console.log('new message init focus');
-      msg= blankMsg;
+      msg= currMsg;
     }
 
     msg[11]=val;
@@ -177,7 +184,7 @@ var dvc = {
   iris:function(val,msg){
     if(!msg){
       console.log('new message init iris');
-      msg= blankMsg;
+      msg= currMsg;
     }
 
     msg[14]=val;
@@ -189,23 +196,25 @@ var dvc = {
 };
 
 
-var DERIVES_LATERALES = {
-  pan:[112,113],
-  tilt:[114,115],
-  color:'red',
-  focus:100,
-  iris:20
-};
+// var DERIVES_LATERALES = {
+//   pan:[112,113],
+//   tilt:[114,115],
+//   color:'red',
+//   focus:100,
+//   iris:20
+// };
 
 function setZone(z){
+
   var msg = dvc.ptTo(z.pan,z.tilt);
   msg = dvc.focus(z.focus,msg);
   msg = dvc.iris(z.iris,msg);
   msg = dvc.cTo(z.color,msg);
+  wrMsg(msg);
+
   setTimeout(function(){
-    msg = dvc.lightOn(255,msg);
-    console.log(msg);
-    return msg;
+    dvc.lightOn(255);
+    console.log('lighton');
   },1000);
 }
 
@@ -226,6 +235,16 @@ function searchMat (list, mat) {
   return val[0];
 }
 
+function testArtnet() {
+  artnet.set(2,1,zeroMsg, function (err, res) {
+    if (err){
+      console.log('arnet not found, check your configuration \n',err);
+      //artnet.close();
+    }
+    else console.log('connected to the arnet server at',options.host);
+  });
+}
+testArtnet();
 // console.log(dvc.reset());
 // console.log(dvc.iris(200));
 // console.log(dvc.focus(200));
@@ -248,10 +267,18 @@ function searchMat (list, mat) {
  * msg :[array] dmx info for all channel
  * device :[object] device controll chanel list, see plConf and d obj
  */
-function wrMsg(msg,device){
-
+function wrMsg(msg){
+  artnet.set(2,1,msg, function (err, res) {
+    if (err){
+      console.log('arnet not found',err);
+      //artnet.close();
+    }
+    else{
+      currMsg = msg;
+    }
+  });
 }
-wrMsg();
+
 
 var http = require('http');
 var static = require('node-static');
@@ -277,12 +304,19 @@ io.on('connection', function (socket) {
   });
   socket.on('light', function (data) {
     console.log(data);
-    io.emit('light:send',data);
+    if(data===0){
+      return dvc.lightOff(currMsg);
+    }
+    else{
+
+      dvc.lightOn(data,currMsg);
+    }
+    //console.log('currmsg',currMsg);
+    //io.emit('light:send',data);
   });
   socket.on('zone', function (data) {
-    console.log('da zone',data);
-    var zoneLine = 'zone:'+data;
-    setZone(DERIVES_LATERALES);
+    //dvc.lightOff();
+    setZone(searchMat (z, data));
     // io.emit(zoneLine,data);
   });
 });
