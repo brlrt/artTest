@@ -7,9 +7,8 @@ options.host = process.env.SERVER_IP || '255.255.255.255'
 
 console.log('env', process.env.NODE_ENV, ' host :', options.host)
 
-if (process.env.NODE_ENV === 'development') {
-  artnet = require('artnet')(options)
-} else artnet = require('artnet')
+artnet = require('artnet')(options)
+
 var z = require('./zones')
 
 var plConf = require('./devices/rogue')
