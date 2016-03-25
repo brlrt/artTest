@@ -300,7 +300,6 @@ var httpServ = http.createServer(function (request, response) {
 })
 
 var io = require('socket.io')(httpServ)
-var port = 4000
 httpServ.listen(port)
 console.log('webserver listening on port:', port)
 
