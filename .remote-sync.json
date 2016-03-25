@@ -1,0 +1,15 @@
+{
+  "transport": "scp",
+  "hostname": "192.168.1.95",
+  "port": "22",
+  "username": "pi",
+  "keyfile": "~\\.ssh\\id_rsa.pub",
+  "target": "/home/pi/server",
+  "ignore": [
+    ".remote-sync.json",
+    ".git/**",
+    ".env"
+  ],
+  "uploadOnSave": true,
+  "deleteLocal": false
+}
