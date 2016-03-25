@@ -4,6 +4,7 @@ var artnet
 var options = {}
 options.host = process.env.SERVER_IP || '255.255.255.255'
 // host: '192.168.1.95'
+var port = process.env.WEBP || 3000
 
 console.log('env', process.env.NODE_ENV, ' host :', options.host)
 
