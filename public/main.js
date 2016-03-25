@@ -1,5 +1,5 @@
 console.log('v0.0.1')
-var socket = io('http://127.0.0.1:3000')
+var socket = io()
 socket.on('connect', function () {
   console.log('socket connected', socket)
 })
