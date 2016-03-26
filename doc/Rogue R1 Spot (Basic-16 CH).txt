@@ -1,0 +1,60 @@
+﻿ViewType = VIEW_TYPE_HEAD
+ViewPower = VIEW_POWER_LED30W
+ViewAnglePan = 120
+ViewAngleTilt = 90
+ViewAngleBeam = 16
+ViewReversePan = FALSE
+ViewReverseTilt = FALSE
+ViewReverseDimmer = FALSE
+ViewReverseIris = FALSE
+ViewColor = 16777215
+2DViewImage = 
+
+Channel = pan
+ dimmer,0,255
+
+Channel = upan
+ dimmer,0,255
+
+Channel = tilt
+ dimmer,0,255
+
+Channel = utilt
+ dimmer,0,255
+
+Channel = pantilt_speed
+ dimmer,0,255
+
+Channel = dimmer
+ dimmer,0,255
+
+Channel = shutter
+ Closed,0,3 Open,4,7 Strobe slow to fast,8,76 Pulse strobe,77,145 Random Strobe,146,215 Open,216,255
+
+Channel = color
+ Open,0,6 Red,7,13 Orange,14,20 Green,21,27 Yellow,28,34 Blue,35,41 Color Correction 3200K,42,48 Magenta,49,55 Purple,56,63 Split Colors,64,172 Clockwise color scroll slow to fast,173,191 Counter clockwise color scroll slow to fast,192,255
+
+Channel = gobo
+ Open,0,7 Gobo 1,8,15 Gobo 2,16,23 Gobo 3,24,31 Gobo 4,32,39 Gobo 5,40,47 Gobo 6,48,55 Gobo 7,56,63 Gobo 7 shake (slow to fast),64,71 Gobo 6 shake (slow to fast),72,79 Gobo 5 shake (slow to fast),80,87 Gobo 4 shake (slow to fast),88,95 Gobo 3 shake (slow to fast),96,103 Gobo 2 shake (slow to fast),104,111 Gobo 1 shake (slow to fast),112,119 Open,120,127 Clockwise gobo scroll (slow to fast),128,191 Counter clockwise gobo scroll (slow to fast),192,255
+
+Channel = gobo_rotate
+ Indexing,0,63 Clockwise gobo rotation (slow to fast),64,147 Counter clockwise gobo rotation (slow to fast),148,231 Boomerang (slow to fast),232,255
+
+Channel = gobo2
+ Open,0,6 Gobo 1,7,13 Gobo 2,14,20 Gobo 3,21,27 Gobo 4,28,34 Gobo 5,35,41 Gobo 6,42,48 Gobo 7,49,55 Gobo 8,56,63 Gobo 8 shake (slow to fast),64,71 Gobo 7 shake (slow to fast),72,78 Gobo 6 shake (slow to fast),79,85 Gobo 5 shake (slow to fast),86,92 Gobo 4 shake (slow to fast),93,99 Gobo 3 shake (slow to fast),100,106 Gobo 2 shake (slow to fast),107,113 Gobo 1 shake (slow to fast),114,120 Open,121,127 Clockwise gobo scroll (slow to fast),128,191 Counter clockwise gobo scroll (slow to fast),192,255
+
+Channel = focus
+ dimmer,0,255
+
+Channel = prism
+ no_function,0,4 Prism,5,255
+
+Channel = prism_rotate
+ Indexing,0,127 Clockwise rotation (fast to slow),128,189 Stop,190,193 Counter clockwise rotation (slow to fast),194,255
+
+Channel = iris
+ Wide to Narrow,0,63 Auto iris (slow to fast),64,127 Auto iris (in slow out fast),128,191 Auto Iris (out slow in fast),192,255
+
+Channel = control
+ No Function ,0,7 Blackout during pan/tilt (3 sec hold),8,15 Blackout while color wheel moving (3 sec hold),16,23 Blackout while gobo wheels moving (3 sec hold),24,31 Disable pan/tilt blackout (3 sec hold),32,39 Disable color wheel blackout (3 sec hold),40,47 Disable gobo wheel blackout (3 sec hold),48,55 no_function,56,95 Reset Pan,96,103 Reset Tilt,104,111 Color reset ,112,119 Gobo reset,120,127 Gobo rotation reset,128,135 Prism reset,136,143 Focus reset,144,151 Reset All,152,159 Iris reset,160,167 no_function,168,239 Pan/tilt movement ramp speed increase ON,240,247 Pan/tilt movement ramp soeed increase OFF,248,255 
+
