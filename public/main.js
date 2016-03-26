@@ -1,3 +1,5 @@
+/* global io*/
+
 console.log('v0.0.1')
 var socket = io()
 socket.on('connect', function () {
