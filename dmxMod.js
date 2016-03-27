@@ -1,7 +1,10 @@
+require('dotenv').config()
+var debug = require('debug')('main')
 var webserver = require('./webserver')
 var io = require('socket.io')(webserver)
 var artNet = require('./artnet')
-
+var wrt = artNet.wrt
+var port = process.env.WEBP || 3000
 
 
 function init () {
@@ -13,8 +16,9 @@ function init () {
       // io.emit(zoneLine,data)
     })
   })
-  artNet.fade()
-  webserver.listen(3000)
+  // artNet.fade()
+  webserver.listen(port)
+  console.log('webserver spawned, listening to port', port)
 }
 
 init()

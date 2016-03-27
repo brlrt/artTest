@@ -1,17 +1,25 @@
 require('dotenv').config()
+var debug = require('debug')('artnet')
 var options = {}
 options.host = process.env.SERVER_IP || '127.0.0.1'
 var artnet = require('artnet')(options)
-var currMsg
+var dvc = require('./devices/rogueMod')
+
+var currMsg = dvc.dfltMsg
+var pan = dvc.pan
+var tilt = dvc.tilt
+var lOn = dvc.lightOn
+var lOff = dvc.lightOff
+
 
 function testArtnet () {
   artnet.set(2, 1, [null], function (err, res) {
     if (err) {
-      console.log('arnet not found, check your configuration \n', err)
+      debug('arnet not found, check your configuration \n', err)
       return false
     // artnet.close()
     } else {
-      console.log('connected to the arnet server at', options.host)
+      debug('connected to the arnet server at', options.host)
       return true
     }
   })
@@ -24,7 +32,7 @@ function init () {
 function wrt (msg) {
   artnet.set(2, 1, msg, function (err, res) {
     if (err) {
-      console.log('arnet not found', err)
+      debug('arnet not found', err)
     // artnet.close()
     } else {
       currMsg = msg
@@ -34,16 +42,17 @@ function wrt (msg) {
 }
 
 
-function fade (from, to) {
+function fade (from, to, chans) {
   var i = from || 0
   if (!to) to = 255
 
   var fadeInc = function () {
-    console.log('fade', i, currMsg)
+    
     if (i > to) {
       return clearInterval(interval)
     }
     wrt([i, i, i, i])
+    debug('fade', i, currMsg)
     i++
   }
   var interval = setInterval(fadeInc, 500)

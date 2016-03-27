@@ -1,4 +1,5 @@
 // rogue DMX controlled light config
+var debug = require('debug')('rogue')
 
 var rogueInfo = {
   uni: 2,
@@ -41,9 +42,6 @@ var rogueInfo = {
 var baseMsg = [null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null]
 baseMsg[6] = 255 // light
 
-
-
-
 function pan (val, msg) {
   if (!msg) return console.error('you should provide a message')
   if (Array.isArray(val) === true) {
@@ -52,7 +50,7 @@ function pan (val, msg) {
   } else {
     msg[0] = val
   }
-  console.log(msg)
+  debug('pan', msg)
   return msg
 }
 
@@ -64,7 +62,8 @@ function tilt (val, msg) {
   } else {
     msg[0] = val
   }
-  console.log(msg)
+
+  debug('tilt', msg)
   return msg
 }
 
@@ -72,17 +71,51 @@ function lightOn (val, msg) {
   if (!msg) return console.error('you should provide a message')
   msg[5] = val || 255
   msg[6] = 255
+
+  debug('light on', val, msg)
+  return msg
+}
+
+function lightOff (msg) {
+  if (!msg) return console.error('you should provide a message')
+  msg[5] = 0 || 255
+  msg[6] = 255
+
+  debug('light off', msg)
+  return msg
+}
+
+function focus (val, msg) {
+  if (!msg) return console.error('you should provide a message')
+  msg[11] = val
+
+  debug('focus', val, msg)
+  return msg
+}
+
+function iris (val, msg) {
+  if (!msg) return console.error('you should provide a message')
+  msg[14] = val
+
+  debug('iris', val, msg)
+  return msg
 }
 
 var rogue = {
   rogueInfo: rogueInfo,
+  dfltMsg: baseMsg,
   pan: pan,
   tilt: tilt,
-  lightOn: lightOn
+  lightOn: lightOn,
+  lightOff: lightOff,
+  focus: focus,
+  iris: iris
 }
 
-pan([20, 20], baseMsg)
-tilt([10, 10], baseMsg)
+// pan([20, 20], baseMsg)
+// tilt([10, 10], baseMsg)
+// lightOn(129, baseMsg)
+// lightOn(129, baseMsg)
+// iris(132, baseMsg)
 
 module.export = rogue
-

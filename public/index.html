@@ -1,16 +1,37 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-  <meta charset="UTF-8">
-  <title>testDmx zones</title>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>LaserEmber</title>
+  <meta name="description" content="">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <link rel="stylesheet" href="assets/laser-ember.css">
+  <link rel="stylesheet" href="assets/js/mejs/mediaelementplayer.min.css">
+
+
 </head>
 <body>
-  this is a test.
-  <a href="#" id="zone1">zone1</a>
-  <a href="#" id="zone2">zone2</a>
-  <a href="#" id="on">on</a>
-  <a href="#" id="off">off</a>
-<script src="/socket.io/socket.io.js"></script>
-<script src="main.js"></script>
+<div class="wrapper">
+  <div class="textCont ">
+    <div class="laserMap">
+      <div class="debug"></div>
+      <a class="mainLink" href="/lang.html">
+        <video width="1920px" height="1080px" preload="none" autoplay loop id="player">
+            <source type="video/mp4" src="assets/vid/intro.mp4" />
+        </video>
+        <!-- <div class="hand animHand"></div> -->
+      </a>
+    </div>
+  </div>
+</div>
+<script src="assets/jquery.js"></script>
+<script src="assets/js/mejs/mediaelement-and-player.min.js"></script>
+<script src="assets/index.js"></script>
+<!-- <script src="assets/js/components/mediaelement/build/mediaelementplayer.min.js"></script> -->
+<!-- <script src="assets/laser-ember.js"></script> -->
+
+
 </body>
 </html>

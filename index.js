@@ -1,14 +1,21 @@
+console.log('artnet v0.2.3')
 require('dotenv').config()
 var _ = require('lodash')
 var artnet
 var options = {}
-options.host = process.env.SERVER_IP || '255.255.255.255'
+options.host = process.env.SERVER_IP || '127.0.0.1'
 // host: '192.168.1.95'
 var port = process.env.WEBP || 3000
 
 console.log('env', process.env.NODE_ENV, ' host :', options.host)
 
-artnet = require('artnet')(options)
+// artnet = require('artnet')(options)
+
+artnet = {
+  set: function () {
+    console.log('art set called')
+  }
+}
 
 var z = require('./zones')
 
@@ -17,44 +24,6 @@ var plConf = require('./devices/rogue')
 var timer
 var timerDur = 10000
 
-
-// var plConf={
-//   uni:2,
-//   channels:{
-//     pan:1,
-//     fPan:2,
-//     tilt:3,
-//     fTilt:4,
-//     ptSpeed:5,
-//     dimmer:6,
-//     shutter:7,
-//     color:8,
-//     glb1:9,
-//     glb1R:10,
-//     glb2:11,
-//     focus:12,
-//     prism:13,
-//     prismR:14,
-//     iris:15,
-//     control:16
-//   },
-//   shCtrl:{
-//     open:5,
-//     close:0
-//   },
-//   colors:{
-//     white:0,
-//     red:7,
-//     orange:14,
-//     green:21,
-//     yellow:28,
-//     blue:35,
-//     cto:42,
-//     magenta:49,
-//     purple:56
-//   },
-//   irisRange:[0,63]
-// }
 var d = {
   uni: plConf.uni,
   dP: plConf.channels.pan,
@@ -226,18 +195,23 @@ var dvc = {
 //   iris:20
 // }
 
+function cTimeout () {
+  console.log('called clearTimeout')
+  clearTimeout(timer)
+}
+
 function setZone (z) {
+  cTimeout()
   var msg = dvc.ptTo(z.pan, z.tilt)
   msg = dvc.focus(z.focus, msg)
   msg = dvc.iris(z.iris, msg)
   msg = dvc.cTo(z.color, msg)
   console.dir(msg)
   wrMsg(msg)
-
+  sleepTimer(timerDur, msg)
   setTimeout(function () {
     dvc.lightOn(255, msg)
     console.log('lighton')
-    sleepTimer
   }, 1000)
 }
 
@@ -267,7 +241,7 @@ function testArtnet () {
     }
   })
 }
-testArtnet()
+// testArtnet()
 // console.log(dvc.reset())
 // console.log(dvc.iris(200))
 // console.log(dvc.focus(200))
@@ -305,11 +279,13 @@ var httpServ = http.createServer(function (request, response) {
   }).resume()
 })
 
-function sleepTimer (timer, duration, msg) {
-  clearTimeout(timer)
-  timer = setTimeout(function(){
+function sleepTimer (duration, msg) {
+  cTimeout()
+  console.log('timer called', duration)
+  timer = setTimeout(function () {
+    console.log('timer fired')
     dvc.lightOff(msg)
-  },duration)
+  }, duration)
 }
 
 var io = require('socket.io')(httpServ)
@@ -324,7 +300,7 @@ io.on('connection', function (socket) {
     io.emit('pos:send', data)
   })
   socket.on('light', function (data) {
-    console.log(data)
+    // console.log(data)
     if (data === 0) {
       console.log('lightoff currmsg', currMsg)
       return dvc.lightOff(currMsg)
