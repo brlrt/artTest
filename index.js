@@ -9,13 +9,13 @@ var port = process.env.WEBP || 3000
 
 console.log('env', process.env.NODE_ENV, ' host :', options.host)
 
-// artnet = require('artnet')(options)
+artnet = require('artnet')(options)
 
-artnet = {
-  set: function () {
-    console.log('art set called')
-  }
-}
+// artnet = {
+//   set: function () {
+//     console.log('art set called')
+//   }
+// }
 
 var z = require('./zones')
 
@@ -241,7 +241,7 @@ function testArtnet () {
     }
   })
 }
-// testArtnet()
+testArtnet()
 // console.log(dvc.reset())
 // console.log(dvc.iris(200))
 // console.log(dvc.focus(200))
@@ -295,24 +295,11 @@ console.log('webserver listening on port:', port)
 io.on('connection', function (socket) {
   console.log('something connected', socket.id)
   socket.emit('ready', { hello: 'world' })
-  socket.on('pos', function (data) {
-    console.log(data)
-    io.emit('pos:send', data)
-  })
-  socket.on('light', function (data) {
-    // console.log(data)
-    if (data === 0) {
-      console.log('lightoff currmsg', currMsg)
-      return dvc.lightOff(currMsg)
-    } else {
-      dvc.lightOn(data, currMsg)
-    }
-  // console.log('currmsg',currMsg)
-  // io.emit('light:send',data)
-  })
+
   socket.on('zone', function (data) {
-    // dvc.lightOff()
-    setZone(searchZone(z, data))
-  // io.emit(zoneLine,data)
+    console.log('da data', data)
+    if (data) {
+      setZone(searchZone(z, data))
+    }
   })
 })

@@ -1,4 +1,4 @@
-/* global io */
+/* global io $ _ */
 var app = app || {}
 var url = {}
 var socket = io()
@@ -12,7 +12,7 @@ console.log(zoneEvent)
 socket.on('ready', function () {
   console.log('socket connected', url.detail)
   if (!url.czone) {
-    console.log('regular zone')
+    console.log('regular zone', url)
     socket.emit('zone', url.czone)
   } else {
     console.log('custom zone')
