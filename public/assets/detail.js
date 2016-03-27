@@ -5,16 +5,22 @@ var socket = io()
 
 url.lang = app.urlParam('lang')
 url.detail = app.urlParam('detail')
+url.czone = app.urlParam('czone')
 var zoneEvent = 'zone:' + url.detail
 console.log(zoneEvent)
 
 socket.on('ready', function () {
   console.log('socket connected', url.detail)
-  socket.emit('zone', url.detail)
-  console.log(url.detail)
+  if (!url.czone) {
+    console.log('regular zone')
+    socket.emit('zone', url.czone)
+  } else {
+    console.log('custom zone')
+    socket.emit('zone', url.detail)
+  }
 })
 
-socket.emit('zone', url.detail)
+// socket.emit('zone', url.detail)
 
 var pictArr = []
 var curPict
