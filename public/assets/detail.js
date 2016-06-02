@@ -130,7 +130,15 @@ app.initNav = function () {
 }
 
 app.init = function () {
-  var backURL = 'boat' + url.lang + '.html?lang=' + url.lang
+  var linkLang = ''
+  if (url.lang === 'en') {
+    linkLang = 'EN'
+  } else if (url.lang === 'de') {
+    linkLang = 'De'
+  } else {
+    linkLang = 'Fr'
+  }
+  var backURL = 'boat' + linkLang + '.html?lang=' + url.lang
   var btHtml = '<a class="backBt" href="' + backURL + '"></a>'
   $('.backBtCont').html(btHtml)
   app.debug('back Url' + backURL)
