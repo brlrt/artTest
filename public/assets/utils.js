@@ -1,8 +1,10 @@
+/* globals DEBUG, $ */
+var DEBUG = true
 var app = app || {}
 app.version = 'v 0.0.7'
 
 app.urlParam = function (name) {
-  var results = new RegExp('[\?&amp;]' + name + '=([^&amp;#]*)').exec(window.location.href)
+  var results = new RegExp('[?&amp;]' + name + '=([^&amp;#]*)').exec(window.location.href)
   if (results) return results[1] || 0
 }
 
@@ -15,14 +17,18 @@ $('a').on('touchstart', function (event) {
   app.curlLink = $(this).attr('href')
   // window.location.href = $(this).attr('href')
   app.startTime = new Date()
-  app.debug($(this).attr('href') + app.curTime)
+  if (DEBUG) {
+    app.debug($(this).attr('href') + app.curTime)
+  }
 })
 
 $('a').on('touchend', function (event) {
   event.preventDefault()
-  app.curTime = new Date()
-  var clickTime = app.curTime - app.startTime
-  app.debug($(this).attr('href') + 'touch len = ' + clickTime)
+  if (DEBUG) {
+    app.curTime = new Date()
+    var clickTime = app.curTime - app.startTime
+    app.debug($(this).attr('href') + 'touch len = ' + clickTime)
+  }
   window.location.href = $(this).attr('href')
 })
 

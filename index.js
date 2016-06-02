@@ -11,11 +11,7 @@ console.log('env', process.env.NODE_ENV, ' host :', options.host)
 
 artnet = require('artnet')(options)
 
-// artnet = {
-//   set: function () {
-//     console.log('art set called')
-//   }
-// }
+var isLightOn = false
 
 var z = require('./zones')
 
@@ -144,6 +140,7 @@ var dvc = {
     return msg
   },
   lightOff: function (msg) {
+    isLightOn = false
     if (!msg) {
       console.log('new message init light off')
       msg = currMsg
@@ -206,13 +203,15 @@ function setZone (z) {
   msg = dvc.focus(z.focus, msg)
   msg = dvc.iris(z.iris, msg)
   msg = dvc.cTo(z.color, msg)
-  console.dir(msg)
   wrMsg(msg)
   sleepTimer(timerDur, msg)
-  setTimeout(function () {
-    dvc.lightOn(255, msg)
-    console.log('lighton')
-  }, 1000)
+  if (isLightOn === false) {
+    setTimeout(function () {
+      dvc.lightOn(255, msg)
+      console.log('lighton')
+      isLightOn = true
+    }, 1000)
+  }
 }
 
 // function test(c){
@@ -300,6 +299,6 @@ io.on('connection', function (socket) {
     console.log('da data', data)
     if (data) {
       setZone(searchZone(z, data))
-    }
+    } else console.log('pas de data pas de chocolat')
   })
 })

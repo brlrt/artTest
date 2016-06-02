@@ -16,3 +16,4 @@ http.createServer(function(req, res){
 // fake worker of some kind
 
 require('./worker');
+  

@@ -7,15 +7,15 @@ module.exports = {
     iris: 54
   },
   CRASH_BOX: {
-    pan: [110, 255],
-    tilt: [154, 115],
+    pan: [113, 0],
+    tilt: [192, 115],
     color: 'orange',
     focus: 241,
     iris: 54
   },
   SOUTES_A_VOILE: {
-    pan: [62, 0],
-    tilt: [80, 0],
+    pan: [48, 0],
+    tilt: [152, 0],
     color: 'magenta',
     focus: 238,
     iris: 35
@@ -108,27 +108,20 @@ module.exports = {
   },
 
   ANTENNES_SATELLITES: {
-    pan: [180, 30],
-    tilt: [80, 115],
-    color: 'orange',
-    focus: 100,
-    iris: 20
-  },
-  ANTENNES_SATELLITES2: {
     pan: [173, 0],
-    tilt: [57, 0],
-    color: 'blue',
+    tilt: [56, 0],
+    color: 'green',
     focus: 237,
     iris: 50
   },
-  BARRES_ET_SAFRAN: {
+  BARRES_ET_SAFRAN2: {
     pan: [160, 0],
     tilt: [54, 0],
     color: 'green',
     focus: 237,
     iris: 58
   },
-  BARRES_ET_SAFRAN2: {
+  BARRES_ET_SAFRAN: {
     pan: [163, 0],
     tilt: [58, 0],
     color: 'magenta',

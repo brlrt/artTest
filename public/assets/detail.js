@@ -2,7 +2,7 @@
 var app = app || {}
 var url = {}
 var socket = io()
-
+var isFixed = false
 url.lang = app.urlParam('lang')
 url.detail = app.urlParam('detail')
 url.czone = app.urlParam('czone')
@@ -10,13 +10,14 @@ var zoneEvent = 'zone:' + url.detail
 console.log(zoneEvent)
 
 socket.on('ready', function () {
-  console.log('socket connected', url.detail)
+  console.log(url)
+  console.log('socket connected')
   if (!url.czone) {
-    console.log('regular zone', url)
-    socket.emit('zone', url.czone)
+    console.log('regular zone')
+    socket.emit('zone', url.detail)
   } else {
     console.log('custom zone')
-    socket.emit('zone', url.detail)
+    socket.emit('zone', url.czone)
   }
 })
 
@@ -80,8 +81,9 @@ app.updateSlide = function () {
 }
 
 app.initNav = function () {
+
   $('.carrControlCont').prepend('<div class="carrControls"><span class="carrBt prev"></span><span class="carrBt next"></span></div>').promise().done(function () {
-    $('.prev').on('touchend', function (event) {
+    function prev () {
       app.debug('prev clicked')
       if (panIndex > 0) {
         console.log('panIndex', panIndex)
@@ -92,15 +94,9 @@ app.initNav = function () {
         panIndex = panoLen - 1
         app.updateSlide(panIndex)
       }
-    })
-    //         .on('touchend', function(event) {
-    //   event.preventDefault()
-    //   app.curTime = new Date()
-    //   var clickTime = app.curTime - app.startTime
-    //   app.debug($(this).attr('href')+'touch len = ' + clickTime )
-    //   window.location.href = $(this).attr('href')
-    // })
-    $('.next').on('touchend', function (event) {
+    }
+
+    function next () {
       app.debug('next clicked')
       if (panIndex === panoLen - 1) {
         console.log('panIndex', panIndex)
@@ -111,6 +107,24 @@ app.initNav = function () {
         ++panIndex
         app.updateSlide(panIndex)
       }
+    }
+
+    if (isFixed === true) {
+      $('.prev').click(function (event) {
+        prev()
+      })
+
+      $('.next').click(function (event) {
+        next()
+      })
+    }
+
+    $('.prev').on('touchend', function (event) {
+      prev()
+    })
+
+    $('.next').on('touchend', function (event) {
+      next()
     })
   })
 }
