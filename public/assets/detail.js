@@ -2,7 +2,7 @@
 var app = app || {}
 var url = {}
 var socket = io()
-var isFixed = false
+var isFixed = true
 url.lang = app.urlParam('lang')
 url.detail = app.urlParam('detail')
 url.czone = app.urlParam('czone')
