@@ -10,10 +10,10 @@
   "license": "ISC",
   "dependencies": {
     "artnet": "^1.0.3",
-    "dotenv": "^2.0.0",
-    "install": "^0.4.1",
+    "dotenv": "^7.0.0",
+    "install": "^0.12.2",
     "lodash": "^4.1.0",
     "node-static": "^0.7.7",
-    "socket.io": "^1.4.5"
+    "socket.io": "^2.2.0"
   }
 }
